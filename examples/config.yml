@@ -1,0 +1,21 @@
+---
+endpoint: hobbes
+host: traefik.riffraff169.org
+https: true
+self_cert: true
+# global: delete characters across whole line, not just first one
+filters:
+  - op: delete
+    regex: '"Host(`'
+    global: true
+  - op: delete
+    regex: '`)"'
+    global: true
+  - op: deleteline
+    regex: HostRegexp
+  - op: deleteline
+    regex: ||
+    global: true
+#  - op: delete
+#    regex: '"'
+#    global: true
