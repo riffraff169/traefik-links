@@ -1,13 +1,8 @@
 name: traefik-links
-version: 0.1.0
+version: 0.3.0
 
 authors:
   - Lance Dillon <riffraff169@yahoo.com>
-
-#development_dependencies:
-#  ameba:
-#    github: crystal-ameba/ameba
-#    version: ~> 1.3.0
 
 targets:
   traefik-links:
