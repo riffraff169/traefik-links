@@ -1,21 +1,28 @@
 require "http/client"
 require "json"
 require "yaml"
+require "option_parser"
 
-#class Config
-#  include YAML::Serializable
-#  property endpoint : String
-#  property host : String?
-#  property https : Bool
-#  property self_cert : Bool
-#  property filters : Array(Hash))
-#end
+debug = false
+config_file = "config.yml"
 
-config = File.open("config.yml") do |file|
+OptionParser.parse do |parser|
+  parser.banner = "Usage: traefik-links [-d|--debug] [-c|--config configfile.yml]"
+  parser.on("-d","--debug","Turn on debug statements") { debug = true }
+  parser.on("-c configfile","--config configfile","Choose config file") { |c| config_file = c }
+  parser.on("-h", "--help", "Show this help") do
+    puts parser
+    exit
+  end
+end
+
+puts "Debug = #{debug}" if debug
+puts "Config file = #{config_file}" if debug
+
+config = File.open(config_file) do |file|
   YAML.parse(file)
 end
 config = config.as_h
-#pp config
 
 if config.has_key? "https"
   if config["https"].as_bool
