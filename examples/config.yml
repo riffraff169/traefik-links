@@ -5,21 +5,19 @@ self_cert: true
 # global: delete characters across whole line, not just first one
 scheme: https
 # what 'using' parameter for router will be
-using_https: websecure
-using_http: web
+# if multiple available, will use 'prefer'red protocol
+protocols:
+  websecure: https
+  web: http
+#using_https: websecure
+#using_http: web
 # if more than one scheme available
-using_prefer: websecure
+prefer: websecure
 filters:
   - op: deleteline
     regex: '\|\|'
   - op: select
     regex: 'Host\(`([^`]+)`\)'
     global: true
-#  - op: delete
-#    regex: '`)"'
-#    global: true
   - op: deleteline
     regex: HostRegexp
-#  - op: delete
-#    regex: '"'
-#    global: true

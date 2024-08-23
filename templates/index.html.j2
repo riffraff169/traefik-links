@@ -1,0 +1,15 @@
+<html>
+<head>
+<title>traefik links</title>
+</head>
+<body>
+<h1>Traefik Apps</h1>
+<div>
+<ul>
+{% for r in hosts %}
+  <li><a href="{{ r.prot }}://{{ r.host }}">{{ r.host }}</a></li>
+{% endfor %}
+</ul>
+</div>
+</body>
+</html>

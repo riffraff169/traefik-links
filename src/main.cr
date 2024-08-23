@@ -2,6 +2,9 @@ require "http/client"
 require "json"
 require "yaml"
 require "option_parser"
+require "http/server"
+
+require "./router.cr"
 
 BASENAME = File.basename(PROGRAM_NAME)
 debug = false
@@ -57,6 +60,14 @@ if config.has_key? "self_cert"
   self_cert = config["self_cert"].as_bool
 end
 
+if config.has_key? "protocols"
+  protocols = config["protocols"].as_h
+else
+  puts "Configuration does not have a protocols entry"
+  exit 2
+end
+puts "Protocols = #{protocols}" if debug
+
 if debug
   puts "Scheme = #{scheme}"
   puts "Endpoint = #{endpoint}"
@@ -80,7 +91,7 @@ unless host.nil?
 else
   headers = nil
 end
-pp headers
+pp headers if debug
 
 tls = nil
 unless self_cert.nil?
@@ -88,7 +99,7 @@ unless self_cert.nil?
     tls = OpenSSL::SSL::Context::Client.insecure
   end
 end
-pp tls
+pp tls if debug
 
 response = HTTP::Client.get(
   url,
@@ -97,11 +108,10 @@ response = HTTP::Client.get(
 )
 
 res = JSON.parse(response.body)
-rules = res.as_a.map { |s| s["rule"].as_s }
-
-#res = /Host\(`([^`]+)`\)/.match(rules[0])
-
-#pp res
+rules = res.as_a.map do |s|
+  a = Router.new(s["rule"].as_s, s["using"][0].as_s)
+  a
+end
 
 hosts = rules.map do |rule|
   if debug
@@ -129,21 +139,21 @@ hosts = rules.map do |rule|
       regex = filter["regex"]
       puts "Regex = #{regex}" if debug
       puts "Rule = #{rule}" if debug
-      match = /#{regex}/.match(rule)
+      match = /#{regex}/.match(rule.host)
       pp match if debug
-      if /#{regex}/.match(rule)
+      if /#{regex}/.match(rule.host)
         puts "deleted" if debug
-        rule = ""
+        rule.host = ""
       end
     elsif filter["op"] == "select"
       puts "Select" if debug
       regex = filter["regex"]
       puts "Regex = #{regex}" if debug
       puts "Rule = #{rule}" if debug
-      match = /#{regex}/.match(rule)
+      match = /#{regex}/.match(rule.host)
       pp match if debug
       if match
-        rule = match.try &.[1]
+        rule.host = match.try &.[1]
       end
     end
 
@@ -157,6 +167,10 @@ hosts = rules.map do |rule|
   rule
 end
 
-hosts = hosts.select { |e| e.size > 0 }
+hosts = hosts.select { |e| e.host.size > 0 }
 
 pp hosts if debug
+
+# Main server
+
+## Create template page
