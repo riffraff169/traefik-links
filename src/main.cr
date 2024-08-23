@@ -3,16 +3,22 @@ require "json"
 require "yaml"
 require "option_parser"
 
+BASENAME = File.basename(PROGRAM_NAME)
 debug = false
 config_file = "config.yml"
 
 OptionParser.parse do |parser|
-  parser.banner = "Usage: traefik-links [-d|--debug] [-c|--config configfile.yml]"
+  parser.banner = "Usage: #{BASENAME} [-d|--debug] [-c|--config configfile.yml]"
   parser.on("-d","--debug","Turn on debug statements") { debug = true }
   parser.on("-c configfile","--config configfile","Choose config file") { |c| config_file = c }
   parser.on("-h", "--help", "Show this help") do
     puts parser
     exit
+  end
+  parser.invalid_option do |flag|
+    STDERR.puts "ERROR: #{flag} is not a valid option."
+    STDERR.puts parser
+    exit 1
   end
 end
 
@@ -24,19 +30,23 @@ config = File.open(config_file) do |file|
 end
 config = config.as_h
 
-if config.has_key? "https"
-  if config["https"].as_bool
-    scheme = "https"
-  else
-    scheme = "http"
-  end
+unless config.has_key? "scheme"
+  puts "Must have a protocol scheme, either http or https"
+  exit 2
+end
+
+if /^http[s]$/.match(config["scheme"].as_s)
+  scheme = config["scheme"].as_s
+else
+  puts "Protocol scheme must be either http or https"
+  exit 2
 end
 
 begin
   endpoint = config["endpoint"].as_s
 rescue
   puts "Configuration does not have an endpoint"
-  exit 1
+  exit 2
 end
 
 if config.has_key? "host"
@@ -47,10 +57,12 @@ if config.has_key? "self_cert"
   self_cert = config["self_cert"].as_bool
 end
 
-puts "Scheme = #{scheme}"
-puts "Endpoint = #{endpoint}"
-if host
-  puts "Host = #{host}"
+if debug
+  puts "Scheme = #{scheme}"
+  puts "Endpoint = #{endpoint}"
+  if host
+    puts "Host = #{host}"
+  end
 end
 
 if config.has_key? "filters"
@@ -60,7 +72,7 @@ else
 end
 
 url = "#{scheme}://#{endpoint}/api/http/routers"
-pp url
+puts "URL = #{url}" if debug
 
 headers = nil
 unless host.nil?
@@ -79,9 +91,7 @@ end
 pp tls
 
 response = HTTP::Client.get(
-  #"https://hobbes/api/http/routers",
   url,
-  #headers: HTTP::Headers{"Host" => "traefik.riffraff169.org"},
   headers: headers,
   tls: tls
 )
@@ -94,17 +104,15 @@ rules = res.as_a.map { |s| s["rule"].as_s }
 #pp res
 
 hosts = rules.map do |rule|
-  puts "********"
-  puts "Rule = #{rule}"
+  if debug
+    puts "********"
+    puts "Rule = #{rule}"
+  end
   filters.each do |filter|
     case filter
     when YAML::Any
       filter = filter.as_h
     end
-
-    #pp filter
-    #pp typeof(filter["op"])
-    #pp typeof(filter["regex"])
 
     if filter.has_key? "global"
       global = filter["global"]
@@ -112,88 +120,43 @@ hosts = rules.map do |rule|
       global = false
     end
 
-    #pp global
-    puts "========"
-    puts "New filter"
+    if debug
+      puts "========"
+      puts "New filter"
+    end
     if filter["op"] == "deleteline"
-      puts "Deleteline"
+      puts "Deleteline" if debug
       regex = filter["regex"]
-      puts "Regex = #{regex}"
-      puts "Rule = #{rule}"
+      puts "Regex = #{regex}" if debug
+      puts "Rule = #{rule}" if debug
       match = /#{regex}/.match(rule)
-      pp match
+      pp match if debug
       if /#{regex}/.match(rule)
-        puts "deleted"
+        puts "deleted" if debug
         rule = ""
       end
     elsif filter["op"] == "select"
-      puts "Select"
+      puts "Select" if debug
       regex = filter["regex"]
-      puts "Regex = #{regex}"
-      puts "Rule = #{rule}"
+      puts "Regex = #{regex}" if debug
+      puts "Rule = #{rule}" if debug
       match = /#{regex}/.match(rule)
-      pp match
+      pp match if debug
       if match
         rule = match.try &.[1]
       end
     end
 
-    if filter.has_key? "global"
-      pp typeof(filter["global"])
+    if debug
+      if filter.has_key? "global"
+        pp typeof(filter["global"])
+      end
     end
   end
-  puts "Rule2 = #{rule}"
+  puts "Rule2 = #{rule}" if debug
   rule
 end
 
 hosts = hosts.select { |e| e.size > 0 }
 
-pp hosts
-    #pp filter
-#
-#    op = case filter["op"]
-#         when String
-#           filter["op"]
-#         else
-#           filter["op"].as_s
-#         end
-#    regex = filter["regex"]
-#    pp op
-#    pp regex
-#    if filter.has_key? "global"
-#      global = filter["global"]
-#    else
-#      global = false
-#    end
-#    case filter["op"]
-#    when "deleteline"
-#      case rule
-#      when String
-#        if /#{filter["regex"]}/.match(rule)
-#          rule = ""
-#        end
-#      when Nil
-#        next
-#      else
-#        if /#{filter["regex"]}/.match(rule.as_s)
-#          rule = ""
-#        end
-#      end
-#    when "select"
-#      case rule
-#      when String
-#        rule = /#{filter["regex"]}/.match(rule).try &.[1]
-#      when Nil
-#        next
-#      else
-#        rule = /#{filter["regex"]}/.match(rule.as_s).try &.[1]
-#      end
-#    end
-#    #pp filter["op"]
-#    #pp typeof(filter)
-#    #pp typeof(filter["op"])
-#  end
-#  pp rule
-#  rule
-#end
-#
+pp hosts if debug
