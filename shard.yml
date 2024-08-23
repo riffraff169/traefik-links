@@ -4,6 +4,10 @@ version: 0.3.0
 authors:
   - Lance Dillon <riffraff169@yahoo.com>
 
+dependencies:
+  crinja:
+    github: straight-shoota/crinja
+
 targets:
   traefik-links:
     main: src/main.cr
