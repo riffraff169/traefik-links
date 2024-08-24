@@ -1,13 +1,14 @@
 <html>
 <head>
 <title>traefik links</title>
+<link rel="stylesheet" href="next.css">
 </head>
 <body>
 <h1>Traefik Apps</h1>
 <div>
 <ul>
 {% for r in hosts %}
-  <li><a href="{{ r.prot }}://{{ r.host }}">{{ r.host }}</a></li>
+  <li><a href="{{ protocols[r.prot] }}://{{ r.host }}" {% if new_window -%} target="_blank"{% endif -%}>{{ r.host }}</a></li>
 {% endfor %}
 </ul>
 </div>

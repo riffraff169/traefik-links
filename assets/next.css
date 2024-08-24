@@ -1,0 +1,83 @@
+BODY,P,FONT {
+  font-size: 12pt;
+  background-color: #485068;
+  color: #ffffff;
+  font-family: verdana, arial, avant-garde, sans-serif;
+}
+H1,H2,H3,FORM {
+  font-family: verdana, arial, avant-garde, sans-serif;
+}
+FORM,TD {
+  color: #000000;
+  background-color: #485068;
+}
+FORM {
+  color: #ffffff;
+  background-color: #485068;
+}
+TABLE TD {
+  color: #ffffff;
+}
+TD.title {
+  color: #000000;
+  background-color: #5c6787;
+}
+A:link {
+  color: #cdb696;
+}
+A:visited {
+  color: #aaaaaa;
+}
+P {
+  font-family: verdana, arial, avant-garde, sans-serif;
+}
+DIV.topic {
+  text-align: justify;
+  margin-left: 10%;
+}
+DIV.table {
+  text-align: justify;
+  margin-left: 0;
+}
+DIV.topic P {
+  margin-right: 10%;
+}
+MENU,OL LI {
+  list-style-position: outside;
+  list-style-type: disc;
+/*  list-style-image: url('dots/sphere_red.gif'); */
+}
+MENU LI.local {
+  list-style-type: circle;
+}
+TABLE {
+  font-family: verdana, arial, avant-garde, sans-serif;
+  margin-left: 0;
+  padding-left: 0;
+}
+TABLE TD {
+  font-family: verdana, arial, avant-garde, sans-serif;
+}
+TABLE TD.head {
+  background-color: #5c6787;
+}
+H2 {
+  background-color: #5c6787;
+  color: white;
+  padding: 4px;
+  width: 125%;
+  border: 1px solid #485068;
+  font-weight: bold;
+  font-size: 14pt;
+}
+DIV {
+  font-family: verdana, arial, avant-garde, sans-serif;
+  color: white;
+}
+SPAN.sig {
+  font-style: italic;
+  font-size: 10pt;
+}
+SPAN.suggest {
+  font-size: 10pt;
+}

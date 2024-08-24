@@ -9,10 +9,16 @@ scheme: https
 protocols:
   websecure: https
   web: http
-#using_https: websecure
-#using_http: web
 # if more than one scheme available
+# not currently used
 prefer: websecure
+# Use refresh header to auto refresh web page
+refresh: true
+refresh_interval: 300
+bind_port: 8081
+bind_ip: 0.0.0.0
+# open links in new window
+new_window: true
 filters:
   - op: deleteline
     regex: '\|\|'
