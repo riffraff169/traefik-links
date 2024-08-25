@@ -72,11 +72,11 @@ end
 pp headers if debug
 
 # Configure tls insecure/don't verify
-# for self-signed certs
+# for self-signed certs (or where cert doesn't match hostname)
 # real certs are not supported yet
 
 tls = nil
-if cf.self_cert && cf.scheme == "https"
+if !cf.verify_cert && cf.scheme == "https"
   tls = OpenSSL::SSL::Context::Client.insecure
 end
 pp tls if debug
@@ -177,7 +177,7 @@ server = HTTP::Server.new([
       "protocols"  => cf.protocols,
       "new_window" => cf.new_window,
     }
-    template = CRINJA.get_template("index.html.j2")
+    template = CRINJA.get_template(cf.template)
     output = template.render(vars)
     if cf.refresh
       context.response.headers["refresh"] = cf.refresh_interval

@@ -1,7 +1,7 @@
 ---
 endpoint: traefik.example.com
 host: traefik.example.com
-self_cert: true
+verify_cert: false
 # global: delete characters across whole line, not just first one
 scheme: https
 # what 'using' parameter for router will be
@@ -27,3 +27,4 @@ filters:
     global: true
   - op: deleteline
     regex: HostRegexp
+template: index.html.j2

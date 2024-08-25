@@ -9,7 +9,7 @@ struct Config
   include YAML::Serializable
   property endpoint : String = ""
   property host : String = ""
-  property self_cert : Bool = true
+  property verify_cert : Bool = false
   property scheme : String = "https"
   property prefer : String = ""
   property refresh : Bool = false
@@ -19,4 +19,5 @@ struct Config
   property new_window : Bool = true
   property protocols : Hash(String, String) = {} of String => String
   property filters : Array(Filter) = [] of Filter
+  property template : String = "index.html.j2"
 end
