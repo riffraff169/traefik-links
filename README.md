@@ -24,3 +24,13 @@ This connectsion to the `<endpoint>/api/http/routers`, with a host header of `ho
 * `new_window`: Whether to open links in new tab/window, or the same
 * `filters`: List of filters for the api call to /api/http/routers; converts `rule` to something usable
 * `template`: HTML template for displaying links
+
+A dockerfile has been provided to create a docker image.  Just run make docker. Expose the port needed, or even integrate it with traefik with a docker-compose.yml or compose.yml) and map to the internal port used.
+
+This is built with standard development mode.  It can be built with production mode by adding `--production`:
+
+```
+shards build --production
+```
+
+However, since this isn't a very intensive program, so I don't think it would get you much.
