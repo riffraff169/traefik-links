@@ -33,4 +33,6 @@ This is built with standard development mode.  It can be built with production m
 shards build --production
 ```
 
+Release mode gives even more savings.  The binary is smaller by almost 3m.
+
 However, since this isn't a very intensive program, so I don't think it would get you much.
