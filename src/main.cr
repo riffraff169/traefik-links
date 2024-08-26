@@ -82,13 +82,20 @@ end
 pp tls if debug
 
 # Get routers from traefik api
-def get_routers(url, headers, tls)
-  response = HTTP::Client.get(
-    url,
-    headers: headers,
-    tls: tls
-  )
-  response
+def get_routers(cf, url, headers, tls)
+  uri = URI.parse(url)
+  client = HTTP::Client.new(uri, tls: tls)
+  # Only supported method right now
+  if cf.auth && cf.auth_type == "basic"
+    client.basic_auth(cf.auth_user, cf.auth_pass)
+  end
+  response = client.get("/api/http/routers", headers: headers)
+  client.close
+
+  if response.status_code == 401
+    STDERR.puts "Unauthorized"
+    exit 3
+  end
 
   res = JSON.parse(response.body)
   rules = res.as_a.map do |s|
@@ -163,12 +170,12 @@ server = HTTP::Server.new([
   HTTP::CompressHandler.new,
   HTTP::StaticFileHandler.new("./assets", true, false),
 ]) do |context|
-  # If request is "/", use traefik links
-  # Otherwise, attempt to server html or css file
-  # Serves nothing on other files
+  # Serves files in ./assets
+  # If not there, serves the template file from the config
+  # Only supports the one config as this is not a full fledge web server
   if context.request.path == "/" && context.request.method == "GET"
     context.response.content_type = "text/html"
-    rules = get_routers(url, headers, tls)
+    rules = get_routers(cf, url, headers, tls)
     hosts = get_list(rules, cf.filters, debug)
     hosts = hosts.select { |e| e.host.size > 0 }
     # Create template page

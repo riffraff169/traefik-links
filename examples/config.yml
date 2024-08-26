@@ -28,3 +28,7 @@ filters:
   - op: deleteline
     regex: HostRegexp
 template: index.html.j2
+auth: true
+auth_type: basic
+auth_user: traefik
+auth_pass: mysecretpassword
