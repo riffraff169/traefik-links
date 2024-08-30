@@ -9,7 +9,7 @@ curl -H 'Host: traefik.example.com' https://<IP>/api/http/routers -k | jq '.[].r
 My personal setup has a LetsEncrypt cert, but since I'm querying on the internal IP and the cert is for the external dns name, it doesn't match, and requires the `-k` (or `--insecure`).
 
 It takes a yaml config file with some parameters. An example has been provided.
-This connectsion to the `<endpoint>/api/http/routers`, with a host header of `host` if set
+This connection to the `<endpoint>/api/http/routers`, with a host header of `host` if set
 
 * `endpoint`: Host to connect to
 * `host`: If the hostname it responds on is different from endpoint, then add this Host header
