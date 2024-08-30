@@ -1,4 +1,4 @@
-This is a program to get a list of http endpoints from traefik and create a simple link of lists with them.
+This is a program to get a list of http endpoints from traefik and create a simple list of links.
 
 It queries traefik's /api/http/routers and gets all rules to get url information. The `jq` equivalent would be `jq '.[].rule'`.  You can test what it pulls by using the following cli call:
 
