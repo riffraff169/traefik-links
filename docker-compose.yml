@@ -1,0 +1,14 @@
+services:
+  traefik-links:
+    image: traefik-links
+    mem_limit: 1g
+    cpu_shares: 256
+    security_opt:
+      - no-no-privileges:true
+    restart: on-failure:5
+    ports:
+      - 8081:8081
+    volumes:
+      - /opt/docker/traefik-links/config.yml:/traefik-links.config.yml
+      - /opt/docker/traefik-links/assets:/traefik-links/assets
+      - /opt/docker/traefik-links/templates:/traefik-links/templates

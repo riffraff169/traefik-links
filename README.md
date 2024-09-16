@@ -42,3 +42,5 @@ Release mode gives even more savings.  The binary is smaller by almost 3m.
 However, since this isn't a very intensive program, so I don't think it would get you much.
 
 Basic auth is supported. The data is in the config file. So remember to protect the config file the same way you would protect the data.
+
+A docker-compose.yml file is provided.  You can add traefik-links to traefik itself by adding some labels. Of course you can modify it to add networks and other things if needed.
