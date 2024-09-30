@@ -8,7 +8,7 @@
   <div>
     <ul>
 {% for r in hosts %}
-      <li><a href="{{ protocols[r.prot] }}://{{ r.host }}" {% if new_window -%} target="_blank"{% endif -%}>{{ r.host }}</a></li>
+      <li><a href="{{ protocols[r.prot].proto_string }}://{{ r.host }}:{{ protocols[r.prot].address }}/" {% if new_window -%} target="_blank"{% endif -%}>{{ r.host }}</a></li>
 {% endfor %}
     </ul>
   </div>

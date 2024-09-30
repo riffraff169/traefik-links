@@ -8,6 +8,7 @@ require "crinja"
 
 require "./router.cr"
 require "./config.cr"
+require "./entrypoints.cr"
 
 BASENAME = File.basename(PROGRAM_NAME)
 debug = false
@@ -47,8 +48,6 @@ end
 
 # Set to insecure if using self-signed cert
 # Only implemented way for now
-
-puts "Protocols = #{cf.protocols}" if debug
 
 if debug
   puts "Scheme = #{cf.scheme}"
@@ -159,6 +158,11 @@ def get_list(rules, filters, debug = false)
   hosts
 end
 
+ep = get_entrypoints(cf, url, headers, tls)
+entrypoints = ep.each_with_object({} of String => Entrypoint) do |s, r|
+  r[s.name] = s
+end
+
 # Initialize crinja information
 CRINJA = Crinja.new loader: Crinja::Loader::FileSystemLoader.new("templates")
 
@@ -181,7 +185,7 @@ server = HTTP::Server.new([
     # Create template page
     vars = {
       "hosts"      => hosts,
-      "protocols"  => cf.protocols,
+      "protocols"  => entrypoints,
       "new_window" => cf.new_window,
     }
     template = CRINJA.get_template(cf.template)

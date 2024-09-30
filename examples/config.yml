@@ -4,11 +4,6 @@ host: traefik.example.com
 verify_cert: false
 # global: delete characters across whole line, not just first one
 scheme: https
-# what 'using' parameter for router will be
-# if multiple available, will use 'prefer'red protocol
-protocols:
-  websecure: https
-  web: http
 # if more than one scheme available
 # not currently used
 prefer: websecure

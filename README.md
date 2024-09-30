@@ -6,6 +6,8 @@ It queries traefik's /api/http/routers and gets all rules to get url information
 curl -H 'Host: traefik.example.com' https://<IP>/api/http/routers -k | jq '.[].rule'
 ```
 
+It also queries /api/entrypoints to map entrypoints to protocols (tls/https and port).
+
 My personal setup has a LetsEncrypt cert, but since I'm querying on the internal IP and the cert is for the external dns name, it doesn't match, and requires the `-k` (or `--insecure`).
 
 It takes a yaml config file with some parameters. An example has been provided.
@@ -15,7 +17,6 @@ This connection is to `<endpoint>/api/http/routers`, with a host header of `host
 * `host`: If the hostname it responds on is different from endpoint, then add this Host header
 * `verify_cert`: Whether to verify the cert or not; false for self-signed certs, only used with https scheme
 * `scheme`: Which scheme to connect to traefik on, http or https
-* `protocols`: Mapping of `using` method to connection scheme
 * `prefer`: What protocol to prefer if more than one presented; currently ignored
 * `refresh`: Whether to auto-refresh web page
 * `refresh_interval`: How often to refresh page
