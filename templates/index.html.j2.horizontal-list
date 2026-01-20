@@ -1,0 +1,16 @@
+<html>
+<head>
+  <title>traefik links</title>
+  <link rel="stylesheet" href="new3.css">
+</head>
+<body>
+  <h1>Traefik Apps</h1>
+  <div id="navcontainer" class="horizontal-list">
+    <ul class="horizontal-list">
+{% for r in hosts %}
+      <li><a href="{{ protocols[r.prot].proto_string }}://{{ r.host }}:{{ protocols[r.prot].address }}/" {% if new_window -%} target="_blank"{% endif -%}>{{ r.host }}</a></li>
+{% endfor %}
+    </ul>
+  </div>
+</body>
+</html>
